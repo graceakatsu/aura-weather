@@ -20,14 +20,14 @@
 #define SCREEN_HEIGHT 320
 #define DRAW_BUF_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT / 10 * (LV_COLOR_DEPTH / 8))
 
-#define LATITUDE_DEFAULT "51.5074"
-#define LONGITUDE_DEFAULT "-0.1278"
-#define LOCATION_DEFAULT "London"
+#define LATITUDE_DEFAULT "39.7392"
+#define LONGITUDE_DEFAULT "-104.9903"
+#define LOCATION_DEFAULT "Denver"
 #define DEFAULT_CAPTIVE_SSID "Aura"
 #define UPDATE_INTERVAL 600000UL  // 10 minutes
 
-// Night mode starts at 10pm and ends at 6am
-#define NIGHT_MODE_START_HOUR 22
+// Night mode starts at 11pm and ends at 6am
+#define NIGHT_MODE_START_HOUR 23
 #define NIGHT_MODE_END_HOUR 6
 
 LV_FONT_DECLARE(lv_font_montserrat_latin_12);
@@ -66,9 +66,9 @@ int x, y, z;
 
 // Preferences
 static Preferences prefs;
-static bool use_fahrenheit = false;
+static bool use_fahrenheit = true;
 static bool use_24_hour = false; 
-static bool use_night_mode = false;
+static bool use_night_mode = true;
 static char latitude[16] = LATITUDE_DEFAULT;
 static char longitude[16] = LONGITUDE_DEFAULT;
 static String location = String(LOCATION_DEFAULT);
@@ -317,6 +317,8 @@ void setup() {
 
   TFT_eSPI tft = TFT_eSPI();
   tft.init();
+  tft.invertDisplay(true);
+  tft.setSwapBytes(true);
   pinMode(LCD_BACKLIGHT_PIN, OUTPUT);
 
   lv_init();
@@ -337,9 +339,9 @@ void setup() {
   lat.toCharArray(latitude, sizeof(latitude));
   String lon = prefs.getString("longitude", LONGITUDE_DEFAULT);
   lon.toCharArray(longitude, sizeof(longitude));
-  use_fahrenheit = prefs.getBool("useFahrenheit", false);
+  use_fahrenheit = prefs.getBool("useFahrenheit", true);
   location = prefs.getString("location", LOCATION_DEFAULT);
-  use_night_mode = prefs.getBool("useNightMode", false);
+  use_night_mode = prefs.getBool("useNightMode", true);
   uint32_t brightness = prefs.getUInt("brightness", 255);
   use_24_hour = prefs.getBool("use24Hour", false);
   current_language = (Language)prefs.getUInt("language", LANG_EN);
